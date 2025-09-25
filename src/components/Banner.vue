@@ -244,20 +244,33 @@ export default {
   transform: translateY(0);
 }
 
-
 .tagline-border {
   display: block;
   height: 2px;
   background: white;
-  width: 0;
+  width: 0; /* start from 0 */
   margin: 15px auto 0;
-  transform-origin: center;
-  transition: width 0.8s ease 0.6s; 
+  transition: width 0.8s ease; /* smooth width growth */
 }
 
+
+
 .slider-item.active .tagline-border {
-  width: 60px; /* final size */
+  width: 60px;
+  animation: slideFadeIn 0.8s forwards; 
 }
+
+@keyframes slideFadeIn {
+  0% {
+    transform: translateY(5px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
 
 
 .house-of-w-bg,
