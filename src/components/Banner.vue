@@ -221,7 +221,10 @@ export default {
 .slider-track {
   transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
+.slider-container{
 
+  animation:  slideCon 1s ease ;
+}
 
 .slider-item img {
   transform: scale(1.2);
@@ -241,7 +244,7 @@ export default {
 
 .slider-item.active .tagline {
   opacity: 1;
-  transform: translateY(0);
+  animation:slideFadeIn 0.8s forwards ;
 }
 
 .tagline-border {
@@ -270,7 +273,17 @@ export default {
     opacity: 1;
   }
 }
-
+@keyframes slideCon {
+  0% {
+    transform: translateY(50px) ; 
+    opacity: 0;
+  }
+ 
+  100% {
+    transform: translateY(0) ;
+    opacity: 1;
+  }
+}
 
 
 .house-of-w-bg,
@@ -305,6 +318,20 @@ export default {
   left: 60%;
   display: flex;
   flex-direction: row;
+
+  
+}
+
+
+@keyframes arrowSlide {
+  0% {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 .slider-arrow-container {
@@ -312,6 +339,22 @@ export default {
   right: 40px;
   display: flex;
   z-index: 3;
+  opacity: 0; /* Start hidden */
+}
+
+/* Trigger when slider is done */
+.slider-arrow-container.show {
+  animation: arrowSlide 0.6s ease-out forwards;
+}
+
+
+.slider-arrow-container {
+  position: absolute;
+  right: 40px;
+  display: flex;
+  z-index: 3;
+animation: arrowSlide 0.6s ease-out forwards;
+  animation-delay: 1s;
 }
 
 .slider-arrow {

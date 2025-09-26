@@ -28,15 +28,34 @@
                   v-for="(item, index) in currentDropdownItems"
                   :key="item.id"
                   class="dropdown-item"
+                    :class="{ 'has-sublist': item.subItems }"
                   :style="{ animationDelay: `${index * 0.05}s` }"
                   @click.stop="handleDropdownItemClick(item)"
+                   @mouseenter="activeSubItem = item.id"
+    @mouseleave="activeSubItem = null"
+   
                   role="menuitem"
                   tabindex="0"
                 >
                   <div class="item-content">
                     <div class="item-title nunito-mh">{{ item.title }}</div>
+                     <span v-if="item.subItems" class="arrow-icon">›</span>
                   
                   </div>
+
+                  <div 
+      v-if="item.subItems && activeSubItem === item.id" 
+      class="sublist-container"
+    >
+      <div 
+        v-for="subItem in item.subItems" 
+        :key="subItem.id"
+        class="sublist-item"
+        @click.stop="handleSubItemClick(subItem)"
+      >
+        {{ subItem.title }}
+      </div>
+    </div>
                 </div>
               </div>
               
@@ -121,6 +140,7 @@ export default {
       hoverTimeout: null,
       isSticky: false,
       searchActive: false,
+         activeSubItem: null,
 searchQuery: '',
 searchResults: [], 
 
@@ -137,28 +157,51 @@ searchResults: [],
               id: 'Explore products',
               title: 'ISVEA',
               description: 'Premium bathroom solutions',
-              badge: 'Featured'
+              badge: 'Featured',
+              subItems: [
+          { id: 'isvea-vanity', title: 'Vanities' },
+          { id: 'isvea-sinks', title: 'Sinks' },
+          { id: 'isvea-showers', title: 'Showers' }
+        ]
             },
             {
               id: 'idevit',
               title: 'IDEVIT',
-              description: 'Innovative sanitaryware designs'
+              description: 'Innovative sanitaryware designs',
+               subItems: [
+          { id: 'olympia-basic', title: 'Basic Range' },
+          { id: 'olympia-premium', title: 'Premium Range' }
+        ]
             },
             {
               id: 'olympia',
               title: 'Olympia',
-              description: 'Classic elegance for modern homes'
+              description: 'Classic elegance for modern homes',
+               subItems: [
+          { id: 'olympia-basic', title: 'Basic Range' },
+          { id: 'olympia-premium', title: 'Premium Range' }
+        ]
             },
             {
               id: 'otp-solutions',
               title: 'O+P Solutions',
-              description: 'Complete bathroom systems'
+              description: 'Complete bathroom systems',
+               subItems: [
+          { id: 'olympia-basic', title: 'Basic Range' },
+          { id: 'olympia-premium', title: 'Premium Range' },
+                    { id: 'olympia-pr', title: 'Premium Range' }
+        ]
             },
             {
               id: 'wellness',
               title: 'Wellness',
               description: 'Spa-inspired luxury products',
-              badge: 'New'
+              badge: 'New',
+               subItems: [
+          { id: 'olympia-basic', title: 'Basic Range' },
+          { id: 'olympia-premium', title: 'Premium Range' },
+
+        ]
             }
           ]
         },
@@ -170,23 +213,39 @@ searchResults: [],
             {
               id: 'interior-paints',
               title: 'Interior Paints',
-              description: 'Premium wall finishes'
+              description: 'Premium wall finishes',
+               subItems: [
+          { id: 'olympia-basic', title: 'Coming Soon...' },
+        
+        ]
             },
             {
               id: 'exterior-paints',
               title: 'Exterior Paints',
-              description: 'Weather-resistant coatings'
+              description: 'Weather-resistant coatings',
+               subItems: [
+          { id: 'olympia-basic', title: 'Coming Soon...' },
+        
+        ]
             },
             {
               id: 'specialty-finishes',
               title: 'Specialty Finishes',
               description: 'Textured and decorative paints',
-              badge: 'Popular'
+              badge: 'Popular',
+               subItems: [
+          { id: 'olympia-basic', title: 'Coming Soon...' },
+        
+        ]
             },
             {
               id: 'primers',
               title: 'Primers & Base Coats',
-              description: 'Professional preparation products'
+              description: 'Professional preparation products',
+               subItems: [
+          { id: 'olympia-basic', title: 'Coming Soon...' },
+        
+        ]
             }
           ]
         },
@@ -198,23 +257,39 @@ searchResults: [],
             {
               id: 'door-handles',
               title: 'Door Handles',
-              description: 'Contemporary and classic designs'
+              description: 'Contemporary and classic designs',
+               subItems: [
+          { id: 'olympia-basic', title: 'Coming Soon...' },
+        
+        ]
             },
             {
               id: 'cabinet-hardware',
               title: 'Cabinet Hardware',
-              description: 'Knobs, pulls, and hinges'
+              description: 'Knobs, pulls, and hinges',
+               subItems: [
+          { id: 'olympia-basic', title: 'Coming Soon...' },
+        
+        ]
             },
             {
               id: 'bathroom-accessories',
               title: 'Bathroom Accessories',
-              description: 'Towel bars, hooks, and holders'
+              description: 'Towel bars, hooks, and holders',
+               subItems: [
+          { id: 'olympia-basic', title: 'Coming Soon...' },
+        
+        ]
             },
             {
               id: 'architectural-hardware',
               title: 'Architectural Hardware',
               description: 'Professional grade solutions',
-              badge: 'Pro'
+              badge: 'Pro',
+               subItems: [
+          { id: 'olympia-basic', title: 'Coming Soon...' },
+        
+        ]
             }
           ]
         },
@@ -222,7 +297,8 @@ searchResults: [],
           id: 'fiamarc',
           label: 'FIAMARC',
           disabled: true,
-          items: []
+          items: [],
+
         },
 
         
@@ -252,6 +328,13 @@ searchResults: [],
   },
 
   methods: {
+
+
+    handleSubItemClick(subItem) {
+    this.$emit('sub-item-select', subItem);
+    this.hoveredCategory = null;
+    this.activeSubItem = null;
+  },
     
  handleMouseLeaveHeader(event) {
   const headerEl = this.$el;
@@ -394,6 +477,81 @@ searchResults: [],
   animation: slideIn 0.6s  cubic-bezier(0.25, 1, 0.5, 1) forwards; 
 }
 
+/* Style for dropdown items that have sublists */
+.dropdown-item {
+  position: relative;
+  padding: 5px 10px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  border-bottom: 1px solid transparent;
+  animation: slideDownList 0.6s ease-in;
+}
+
+.dropdown-item.has-sublist {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+}
+
+
+
+/* Arrow icon */
+.arrow-icon {
+  font-size: 14px;
+  margin-left: 8px;
+  color: #9CA3AF;
+  transition: transform 0.3s ease;
+}
+
+.dropdown-item:hover .arrow-icon {
+  transform: translateX(3px);
+  color: #000;
+}
+
+/* Sublist container */
+.sublist-container {
+  position: absolute;
+  left:25%; 
+
+  width: 600px;
+  z-index: 1001;
+
+  height: auto;
+   pointer-events: auto;
+}
+
+/* Make it visible on hover */
+.dropdown-item:hover > .sublist-container {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Sublist items */
+.sublist-item {
+  padding: 8px 12px;
+  font-size: 14px;
+  color: #4b5563;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.sublist-item:hover {
+  background-color: #f3f4f6;
+  color: #000;
+}
+
+/* Animation */
+@keyframes fadeInRight {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
 
 @keyframes slideIn {
   from {
@@ -535,13 +693,16 @@ padding: 5px;
   cursor: pointer;
   transition: color 0.2s ease;
   border-bottom: 1px solid transparent;
-  animation: slideDownList 0.6s ease-in-out;
+  animation: slideDownList 0.6s ease-in;
 }
 
 .dropdown-item:hover {
   color: #007bff;
 }
+.item-content{
 
+  display: flex;
+}
 .item-title {
   font-size: 14px;
   font-weight: 600;
